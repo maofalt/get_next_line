@@ -6,7 +6,7 @@
 /*   By: motero <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/17 15:10:47 by motero            #+#    #+#             */
-/*   Updated: 2022/05/17 18:02:54 by motero           ###   ########.fr       */
+/*   Updated: 2022/05/18 13:19:54 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,15 +16,21 @@
 char	*get_next_line(int fd)
 {
 	static int		ret;
-	char	*buffer;
-	char	buf[BUF_SIZE + 1];
-
+	char			test[BUF_SIZE +1];
+	char			*buf;
+	int				line_size;
+	
 	if (fd == -1)
 		return (NULL);
-	while (ret = read(fd, buf, BUF_SIZE ))
-	{
-		buf[ret] = '\0';
-	}
+	line_size = 1;
+	ret = read(fd, test, line_size);
+	test[ret] = 0;
+	while (test[line_size - 1] != '\n')
+		read(fd, test, line_size++);
+	buf = malloc(sizeof(char) * (line_size + 1));
+	ret = read(fd, buf, BUF_SIZE);
+	buf[ret] = '\0';
+	return (buf);
 }
 
 #include <sys/stat.h>
@@ -42,12 +48,9 @@ int main()
 		printf("Error opening the file\n");
 		return (1);
 	}
-	nbr_line = 0;
-	while (line)
-	{
-		line = get_next_line(fd);
-		printf("|%i| %s \n", nbr_line++, line);
-	}
+	nbr_line = 1;
+	line = get_next_line(fd);
+	printf("|%i| %s \n", nbr_line++, line);
 	printf("File is done");
 	return 0;
 }
