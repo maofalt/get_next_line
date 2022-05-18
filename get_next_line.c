@@ -6,30 +6,31 @@
 /*   By: motero <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/17 15:10:47 by motero            #+#    #+#             */
-/*   Updated: 2022/05/18 13:19:54 by motero           ###   ########.fr       */
+/*   Updated: 2022/05/18 19:31:26 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
-#define BUF_SIZE 4096
+#define BUF_SIZE 10
 
 char	*get_next_line(int fd)
 {
 	static int		ret;
-	char			test[BUF_SIZE +1];
 	char			*buf;
-	int				line_size;
 	
 	if (fd == -1)
 		return (NULL);
-	line_size = 1;
-	ret = read(fd, test, line_size);
-	test[ret] = 0;
-	while (test[line_size - 1] != '\n')
-		read(fd, test, line_size++);
-	buf = malloc(sizeof(char) * (line_size + 1));
+	buf = malloc(sizeof(char) * (BUF_SIZE + 1));
 	ret = read(fd, buf, BUF_SIZE);
 	buf[ret] = '\0';
+	if (ft_strchr(buf, '\n'))
+	//if found ft_split and send only first line
+	else
+		while ()
+	// there i no \n in the files or EOF
+	// save actual buffer in other one
+	// read the document again from the last 
+	// test again until /n and then sjoin
 	return (buf);
 }
 
