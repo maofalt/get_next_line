@@ -6,7 +6,7 @@
 /*   By: motero <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/17 15:12:27 by motero            #+#    #+#             */
-/*   Updated: 2022/05/17 17:23:21 by motero           ###   ########.fr       */
+/*   Updated: 2022/05/19 18:51:22 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,5 +15,11 @@
 # include <unistd.h>
 # include <stdlib.h>
 # include <stdio.h>
+
+char	*ft_substr(char const *s, unsigned int start, size_t len);
+char	*ft_strjoin(char const *s1, char const *s2);
+size_t	ft_strlen(const char *s);
+char	*ft_strchr(const char *s, int c);
+size_t	ft_nbr_lines(char const *s, char c);
 
 #endif
