@@ -11,7 +11,7 @@
 /* ************************************************************************** */
 
 #include "get_next_line.h"
-#define BUF_SIZE 5
+#define BUF_SIZE 4 
 #include <stdio.h>
 
 void	*ft_memcpy(void * dest, const void *src, size_t n)
@@ -96,25 +96,38 @@ char	*ft_split(char const *s)
 char	*get_next_line(int fd)
 {
 	int					ret;
-	static char			buf[BUF_SIZE + 1] = {0};
+	char			buf[BUF_SIZE + 1] = {0};
 	char				*temp;
+	static char				*save;
 	char				*line;
 
-	if (fd == -1 || BUF_SIZE == 0 || (read(fd, buf, BUF_SIZE) < 0))
+	if (fd == -1 || BUF_SIZE == 0 )
 		return (NULL);
+	// save must  be passed as static not the buffer, as buffer is iterate and past iteration are lost.  
+	// fix first buf  and fix the next two sections 
 	if ((buf[0] == 0))
 	{
 		ret = read(fd, buf, BUF_SIZE);
 		buf[ret] = 0;
-	}
+		save = ft_strdup("");
+	} 
+//	printf("buf |%s|,", buf);
 	temp = ft_strdup(buf);
-	while (!(ft_strchr(temp, '\n')))
+	while (!ft_strchr(buf, '\n'))
 	{
-		line = ft_split(buf);
-		temp = ft_strchr(buf, '\n') + 1 ;
-		ft_memcpy(buf, temp, ft_strlen(temp) + 1);
+		read (fd, buf, BUF_SIZE);
+		//printf("|%s| + |%s| \n", temp, buf);
+		save = ft_strjoin(temp, buf);
+		printf("|%s| \n", save);
 	}
-	return (line);
+	if (ft_strchr(temp, '\n'))
+	{
+		line = ft_split(save);
+		temp = ft_strchr(save, '\n') + 1 ;
+		ft_memcpy(buf, save, ft_strlen(save) + 1);
+		return (line);
+	}
+	return (NULL);
 }
 
 #include <sys/stat.h>
