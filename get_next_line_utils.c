@@ -6,7 +6,7 @@
 /*   By: motero <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/17 15:10:58 by motero            #+#    #+#             */
-/*   Updated: 2022/05/19 18:51:46 by motero           ###   ########.fr       */
+/*   Updated: 2022/05/22 15:45:44 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,21 +14,24 @@
 
 size_t	ft_nbr_lines(char const *s)
 {
-	size_t	nbr_words;
+	size_t	nbr_lines;
 
-	nbr_words = 0;
+	nbr_lines = 0;
 	while(*s)
 	{
-		if(*s == c)
-			s++;
-		else
+		while(*s++ == '\n')
+			nbr_lines++;
+		while (*s++)
 		{
-			while (*s != c && *s)
-				s++;
-			nbr_words++;
+			if(*s == '\n')
+			{
+				(void)*s++;
+				nbr_lines++;
+				break;
+			}
 		}
 	}
-	return (nbr_words);
+	return (nbr_lines);
 }
 
 char	*ft_substr(char const *s, unsigned int start, size_t len)
