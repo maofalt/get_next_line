@@ -6,7 +6,7 @@
 /*   By: motero <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/17 15:12:27 by motero            #+#    #+#             */
-/*   Updated: 2022/05/23 15:59:13 by motero           ###   ########.fr       */
+/*   Updated: 2022/05/23 21:02:01 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,8 +19,11 @@
 char	*ft_strjoin(char const *s1, char const *s2);
 size_t	ft_strlen(const char *s);
 char	*ft_strchr(const char *s, int c);
-size_t	ft_nbr_lines(char const *s);
-void	*ft_memset(void *s, int c, size_t n);
+void	ft_bzero(void *s, size_t n);
 void	*ft_calloc(size_t nmemb, size_t size);
-
+char	*ft_free_line(char *save);
+char	*ft_extract_line(char *save);
+char	*ft_read_file(int fd, char *past_buf);
+char	*get_next_line(int fd);
+char	*ft_free_nxtbuf(char *past_buf, char *next_buf);
 #endif

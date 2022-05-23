@@ -6,13 +6,20 @@
 /*   By: motero <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/17 15:10:47 by motero            #+#    #+#             */
-/*   Updated: 2022/05/23 16:03:13 by motero           ###   ########.fr       */
+/*   Updated: 2022/05/23 21:03:19 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
-#define BUF_SIZE 4 
-#include <stdio.h>
+
+char	*ft_free_nxtbuf(char *past_buf, char *next_buf)
+{
+	char	*temp;
+
+	temp = ft_strjoin(past_buf, next_buf);
+	free(past_buf);
+	return(temp);
+}
 
 char	*ft_free_line(char *save)
 {
@@ -66,22 +73,27 @@ char	*ft_extract_line(char *save)
  * 4-  if a '\n' is found within te next buf, we interrupt the main loop and we return the buf.*/
 char	*ft_read_file(int fd, char *past_buf)
 {
-	char	next_buf[BUF_SIZE + 1] = {0};
+	char	*next_buf;
 	int		byte;
 
 	if (!past_buf)
 		past_buf = ft_calloc(1, 1);
+	next_buf = ft_calloc(BUFFER_SIZE + 1, sizeof(char));
 	byte = 1;
 	while (byte > 0)
 	{
-		byte = read(fd, next_buf, BUF_SIZE);
-		if (byte < 0)
+		byte = read(fd, next_buf, BUFFER_SIZE);
+		if (byte == -1)
+		{
+			free(next_buf);
 			return (NULL);
+		}
 		next_buf[byte] = 0;
-		past_buf = ft_strjoin(past_buf, next_buf);
+		past_buf = ft_free_nxtbuf(past_buf, next_buf);
 		if (ft_strchr(next_buf, '\n'))
 			break;
 	}
+	free(next_buf);
 	return (past_buf);
 }
 
@@ -94,17 +106,20 @@ char	*get_next_line(int fd)
 	char		*line;
 	static char	*save;
 
-	if (fd == -1 || BUF_SIZE == 0 || (read(fd, 0, 0) < 0))
+	if (fd < 0 || BUFFER_SIZE <= 0 || (read(fd, 0, 0) < 0))
 		return (NULL);
 	save = ft_read_file(fd, save);
 	if (!save)
+	{
+		//`free(save);
 		return (NULL);
+	}
 	line = ft_extract_line(save);
 	save = ft_free_line(save);
 	return (line);
 }
 
-#include <sys/stat.h>
+/*#include <sys/stat.h>
 #include <fcntl.h>
 
 int main()
@@ -128,4 +143,4 @@ int main()
 	}
 	printf("File is done");
 	return 0;
-}
+}*/

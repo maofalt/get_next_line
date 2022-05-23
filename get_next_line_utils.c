@@ -6,7 +6,7 @@
 /*   By: motero <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/17 15:10:58 by motero            #+#    #+#             */
-/*   Updated: 2022/05/23 15:59:05 by motero           ###   ########.fr       */
+/*   Updated: 2022/05/23 20:48:48 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,11 +17,9 @@ char	*ft_strjoin(char const *s1, char const *s2)
 	char		*new_s;
 	size_t		i;
 	size_t		j;
-
-	if (!s1 || !s2)
-		return (NULL);
+	
 	new_s = malloc(sizeof(char) * (ft_strlen(s1) + ft_strlen(s2) + 1));
-	if (!new_s || (s1 == NULL && s2 == NULL))
+	if (!new_s || !s1 || !s2)
 		return (NULL);
 	i = 0;
 	while (i < ft_strlen(s1))
@@ -44,7 +42,7 @@ size_t	ft_strlen(const char *s)
 	int	len;
 
 	len = 0;
-	while (*s++)
+	while (s[len])
 		len++;
 	return (len);
 }
@@ -72,34 +70,24 @@ char	*ft_strchr(const char *s, int c)
 	}
 }
 
-void	*ft_memset(void *s, int c, size_t n)
+void	ft_bzero(void *s, size_t n)
 {
-	unsigned char	*ptr;
+	char	*ptr;
+	size_t	i;
 
-	ptr = (unsigned char *)s;
-	while(n-- > 0)
-	{
-		*ptr++ = c;
-	}
-	return (s);
+	ptr = (char *)s;
+	i = 0;
+	while (i < n)
+		ptr[i++] = '\0';
 }
 
 void	*ft_calloc(size_t nmemb, size_t size)
 {
 	void	*ptr;
-	size_t	total;
-
-	if (!nmemb || !size)
-	{
-		nmemb = 1;
-		size = 1;
-	}
-	total = nmemb * size;
-	if ((total / nmemb) != size)
-		return (NULL);
+	
 	ptr = (void *)malloc(nmemb * size);
 	if (!ptr)
 		return (NULL);
-	ft_memset(ptr, '\0', nmemb * size);
+	ft_bzero(ptr, nmemb * size);
 	return (ptr);
 }
