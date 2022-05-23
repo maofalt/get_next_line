@@ -6,50 +6,11 @@
 /*   By: motero <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/17 15:10:58 by motero            #+#    #+#             */
-/*   Updated: 2022/05/22 15:45:44 by motero           ###   ########.fr       */
+/*   Updated: 2022/05/23 15:59:05 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
-
-size_t	ft_nbr_lines(char const *s)
-{
-	size_t	nbr_lines;
-
-	nbr_lines = 0;
-	while(*s)
-	{
-		while(*s++ == '\n')
-			nbr_lines++;
-		while (*s++)
-		{
-			if(*s == '\n')
-			{
-				(void)*s++;
-				nbr_lines++;
-				break;
-			}
-		}
-	}
-	return (nbr_lines);
-}
-
-char	*ft_substr(char const *s, unsigned int start, size_t len)
-{
-	unsigned int	idx;
-	char			*modified_s;
-
-	if (!s || !(modified_s = malloc(sizeof(char) * (len + 1))))
-		return (NULL);
-	idx = 0;
-	while (start < ft_strlen((char *)s) && s[start + idx] && idx < len)
-	{
-		modified_s[idx] = s[start + idx];
-		idx++;
-	}
-	modified_s[idx] = '\0';
-	return (modified_s);
-}
 
 char	*ft_strjoin(char const *s1, char const *s2)
 {
@@ -109,4 +70,36 @@ char	*ft_strchr(const char *s, int c)
 		}
 		return (NULL);
 	}
+}
+
+void	*ft_memset(void *s, int c, size_t n)
+{
+	unsigned char	*ptr;
+
+	ptr = (unsigned char *)s;
+	while(n-- > 0)
+	{
+		*ptr++ = c;
+	}
+	return (s);
+}
+
+void	*ft_calloc(size_t nmemb, size_t size)
+{
+	void	*ptr;
+	size_t	total;
+
+	if (!nmemb || !size)
+	{
+		nmemb = 1;
+		size = 1;
+	}
+	total = nmemb * size;
+	if ((total / nmemb) != size)
+		return (NULL);
+	ptr = (void *)malloc(nmemb * size);
+	if (!ptr)
+		return (NULL);
+	ft_memset(ptr, '\0', nmemb * size);
+	return (ptr);
 }

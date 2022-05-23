@@ -6,7 +6,7 @@
 /*   By: motero <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/17 15:10:47 by motero            #+#    #+#             */
-/*   Updated: 2022/05/22 17:50:41 by motero           ###   ########.fr       */
+/*   Updated: 2022/05/23 16:03:13 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,120 +14,94 @@
 #define BUF_SIZE 4 
 #include <stdio.h>
 
-void	*ft_memcpy(void * dest, const void *src, size_t n)
+char	*ft_free_line(char *save)
 {
-	char		*d;
-	const char	*s;
+	int		line_len;
+	int		i;
+	char	*next_buffer;
 
-	d = dest;
-	s = src;
-	while(n-- && (d || s))
-		*d++ = *s++;
-	return (dest);
-}
-
-void	*ft_memmove(void *dest, const void *src, size_t n)
-{
-	char		*cdest;
-	const char	*csrc;
-
-	if (!dest && !src)
-		n =0;
-	if (dest < src)
+	line_len = 0;
+	while (save[line_len] && save[line_len] != '\n')
+		line_len++;
+	if (!save[line_len])
 	{
-		csrc = (const char *) src;
-		cdest = (char *) dest;
-		while (n--)
-			*cdest++ = *csrc++;
-	}
-	else
-	{
-		csrc = (const char *) src + (n - 1);
-		cdest = (char *) dest + (n  - 1);
-		while (n --)
-			*cdest-- = *csrc--;
-	}
-	return (dest);
-}
-
-char	*ft_strdup(const char *s)
-{
-	char	*new_ptr;
-
-	new_ptr = (char *)malloc ((ft_strlen(s) * sizeof(char)) + 1);
-	if (!new_ptr)
+		free(save);
 		return (NULL);
-	ft_memmove(new_ptr, s, ft_strlen(s) + 1);
-	return (new_ptr);
+	}
+	next_buffer = calloc(ft_strlen(save) - line_len + 1, sizeof(char));
+	line_len++;
+	i = 0;
+	while (save[line_len])
+		next_buffer[i++] = save[line_len++];
+	free(save);
+	return (next_buffer);
 }
 
-size_t	ft_linelen(char const *s)
+char	*ft_extract_line(char *save)
 {
-	size_t	l_len;
+	char	*line;
+	char	*buf;
+	int		line_len;
 
-	l_len = 0;
-	while(*s)
+	line_len = 0;
+	if (!save[line_len])
+		return (NULL);
+	while (save[line_len] && save[line_len] != '\n')
+		line_len++;
+	line = ft_calloc(line_len + 2, sizeof(char));
+	if (!line)
+		return (NULL);
+	buf = line;
+	while (line_len--)
+		*buf++ = *save++;
+	if (*save && *save == '\n')
+		*buf++ = '\n';
+	return (line);
+}
+
+/* 1- We calloc past_buf, only useful on the first use
+ * 2- we initiliaze byte to 1, as we ensure to enter the main loop.
+ * we read fd and save it to next_buf with BUF_SIZE and we verify that there were no errors.
+ * 3- We join the past_bufread with the next read
+ * 4-  if a '\n' is found within te next buf, we interrupt the main loop and we return the buf.*/
+char	*ft_read_file(int fd, char *past_buf)
+{
+	char	next_buf[BUF_SIZE + 1] = {0};
+	int		byte;
+
+	if (!past_buf)
+		past_buf = ft_calloc(1, 1);
+	byte = 1;
+	while (byte > 0)
 	{
-		if (*s++ == '\n')
-		{
-			l_len++;
+		byte = read(fd, next_buf, BUF_SIZE);
+		if (byte < 0)
+			return (NULL);
+		next_buf[byte] = 0;
+		past_buf = ft_strjoin(past_buf, next_buf);
+		if (ft_strchr(next_buf, '\n'))
 			break;
-		}
-		l_len++;
 	}
-	return (l_len);
+	return (past_buf);
 }
 
-char	*ft_split(char const *s)
-{
-	char	*split;
-	size_t	len_line;
-	
-	if(!s)
-		return (NULL);
-	len_line = 0;
-	len_line = ft_linelen(s);
-	split = ft_substr(s, 0 , len_line);
-	s += len_line;
-	split[len_line] = 0;
-	return (split);
-}
-
+/* 1- Verify if fd  is correct, buf_size is correct and read  is possible
+ * 2- We use ft_read_file to read the file at least until there is a '\n', insuring there is at least a line or EOF
+ * 3- we extract the first possible line or until EOF
+ * 4-*/
 char	*get_next_line(int fd)
 {
-	int					ret;
-	char			buf[BUF_SIZE + 1] = {0};
-	char				*temp;
-	static char				*save;
-	char				*line;
+	char		*line;
+	static char	*save;
 
-	if (fd == -1 || BUF_SIZE == 0 )
+	if (fd == -1 || BUF_SIZE == 0 || (read(fd, 0, 0) < 0))
 		return (NULL);
-	// save must  be passed as static not the buffer, as buffer is iterate and past iteration are lost.  
-	// fix first buf  and fix the next two sections 
-	if ((buf[0] == 0))
-	{
-		ret = read(fd, buf, BUF_SIZE);
-		buf[ret] = 0;
-		save = ft_strdup("");
-	} 
-//	printf("buf |%s|,", buf);
-	temp = ft_strdup(buf);
-	while (!ft_strchr(buf, '\n'))
-	{
-		read (fd, buf, BUF_SIZE);
-		//printf("|%s| + |%s| \n", temp, buf);
-		save = ft_strjoin(temp, buf);
-		printf("|%s| \n", save);
-	}
-	if (ft_strchr(temp, '\n'))
-	{
-		line = ft_split(save);
-		temp = ft_strchr(save, '\n') + 1 ;
-		ft_memcpy(buf, save, ft_strlen(save) + 1);
-		return (line);
-	}
-	return (NULL);
+	save = ft_read_file(fd, save);
+	if (!save)
+		return (NULL);
+	line = ft_extract_line(save);
+	save = ft_free_line(save);
+	return (line);
 }
 
 #include <sys/stat.h>
