@@ -6,7 +6,7 @@
 /*   By: motero <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/05/17 15:10:47 by motero            #+#    #+#             */
-/*   Updated: 2022/05/23 21:03:19 by motero           ###   ########.fr       */
+/*   Updated: 2022/05/24 11:15:58 by motero           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ char	*ft_free_nxtbuf(char *past_buf, char *next_buf)
 
 	temp = ft_strjoin(past_buf, next_buf);
 	free(past_buf);
-	return(temp);
+	return (temp);
 }
 
 char	*ft_free_line(char *save)
@@ -66,11 +66,14 @@ char	*ft_extract_line(char *save)
 	return (line);
 }
 
-/* 1- We calloc past_buf, only useful on the first use
- * 2- we initiliaze byte to 1, as we ensure to enter the main loop.
- * we read fd and save it to next_buf with BUF_SIZE and we verify that there were no errors.
- * 3- We join the past_bufread with the next read
- * 4-  if a '\n' is found within te next buf, we interrupt the main loop and we return the buf.*/
+//* 1- We calloc past_buf, only useful on the first use
+// * 2- we initiliaze byte to 1, as we ensure to enter the main loop.
+// * we read fd and save it to next_buf with BUF_SIZE and we verify that there 
+// were no errors.
+// * 3- We join the past_bufread with the next read
+// * 4-  if a '\n' is found within te next buf, we interrupt the main loop 
+// and we return the buf.*/
+
 char	*ft_read_file(int fd, char *past_buf)
 {
 	char	*next_buf;
@@ -91,16 +94,17 @@ char	*ft_read_file(int fd, char *past_buf)
 		next_buf[byte] = 0;
 		past_buf = ft_free_nxtbuf(past_buf, next_buf);
 		if (ft_strchr(next_buf, '\n'))
-			break;
+			break ;
 	}
 	free(next_buf);
 	return (past_buf);
 }
 
-/* 1- Verify if fd  is correct, buf_size is correct and read  is possible
- * 2- We use ft_read_file to read the file at least until there is a '\n', insuring there is at least a line or EOF
- * 3- we extract the first possible line or until EOF
- * 4-*/
+///* 1- Verify if fd  is correct, buf_size is correct and read  is possible
+// * 2- We use ft_read_file to read the file at least until there is a '\n', 
+// insuring there is at least a line or EOF
+// 3- we extract the first possible line or until EOF
+// * 4-*/
 char	*get_next_line(int fd)
 {
 	char		*line;
@@ -110,10 +114,7 @@ char	*get_next_line(int fd)
 		return (NULL);
 	save = ft_read_file(fd, save);
 	if (!save)
-	{
-		//`free(save);
 		return (NULL);
-	}
 	line = ft_extract_line(save);
 	save = ft_free_line(save);
 	return (line);
