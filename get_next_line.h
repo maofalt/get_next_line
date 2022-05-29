@@ -18,11 +18,11 @@
 
 char	*ft_strjoin(char const *s1, char const *s2);
 size_t	ft_strlen(const char *s);
-char	*ft_strchr(const char *s, int c);
+int		ft_strchr(const char *s);
 void	ft_bzero(void *s, size_t n);
 void	*ft_calloc(size_t nmemb, size_t size);
-char	*ft_free_line(char *save);
-char	*ft_extract_line(char *save);
+char	*ft_free_line(char *save, int line_len);
+char	*ft_extract_line(char *save, int line_len);
 char	*ft_read_file(int fd, char *past_buf);
 char	*get_next_line(int fd);
 char	*ft_free_nxtbuf(char *past_buf, char *next_buf);

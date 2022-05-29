@@ -21,21 +21,17 @@ char	*ft_free_nxtbuf(char *past_buf, char *next_buf)
 	return (temp);
 }
 
-char	*ft_free_line(char *save)
+char	*ft_free_line(char *save, int line_len)
 {
-	int		line_len;
 	int		i;
 	char	*next_buffer;
 
-	line_len = 0;
-	while (save[line_len] && save[line_len] != '\n')
-		line_len++;
 	if (!save[line_len])
 	{
 		free(save);
 		return (NULL);
 	}
-	next_buffer = calloc(ft_strlen(save) - line_len + 1, sizeof(char));
+	next_buffer = calloc(ft_strlen(save + line_len) + 1, sizeof(char));
 	line_len++;
 	i = 0;
 	while (save[line_len])
@@ -44,17 +40,13 @@ char	*ft_free_line(char *save)
 	return (next_buffer);
 }
 
-char	*ft_extract_line(char *save)
+char	*ft_extract_line(char *save, int line_len)
 {
 	char	*line;
 	char	*buf;
-	int		line_len;
 
-	line_len = 0;
-	if (!save[line_len])
+	if (!save[0])
 		return (NULL);
-	while (save[line_len] && save[line_len] != '\n')
-		line_len++;
 	line = ft_calloc(line_len + 2, sizeof(char));
 	if (!line)
 		return (NULL);
@@ -86,14 +78,12 @@ char	*ft_read_file(int fd, char *past_buf)
 	{
 		byte = read(fd, next_buf, BUFFER_SIZE);
 		if (byte == -1)
-		{
 			return (NULL);
-		}
 		next_buf[byte] = 0;
 		if (byte == 0)
 			break ;
 		past_buf = ft_free_nxtbuf(past_buf, next_buf);
-		if (ft_strchr(next_buf, '\n'))
+		if (ft_strchr(next_buf) != -1)
 			break ;
 	}
 	return (past_buf);
@@ -108,14 +98,17 @@ char	*get_next_line(int fd)
 {
 	char		*line;
 	static char	*save;
-
+	int			line_len;
 	if (fd < 0 || BUFFER_SIZE <= 0 || (read(fd, 0, 0) < 0))
 		return (NULL);
 	save = ft_read_file(fd, save);
 	if (!save)
 		return (NULL);
-	line = ft_extract_line(save);
-	save = ft_free_line(save);
+	line_len = 0;
+	while (save[line_len] && save[line_len] != '\n')
+		line_len++;
+	line = ft_extract_line(save, line_len);
+	save = ft_free_line(save, line_len);
 	return (line);
 }
 

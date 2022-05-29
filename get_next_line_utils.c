@@ -51,21 +51,19 @@ size_t	ft_strlen(const char *s)
 	return (len);
 }
 
-char	*ft_strchr(const char *s, int c)
+int	ft_strchr(const char *s)
 {
 	char	*s_cpy;
 	size_t	s_len;
-	int		c_256;
 
-	c_256 = c % 256;
 	s_cpy = (char *)s;
 	s_len = 0;
 	while (s_cpy[s_len])
 	{
-		if (s_cpy[s_len++] == c_256)
-			return ((char *)s_cpy + (--s_len));
+		if (s_cpy[s_len++] == '\n')
+			return ((--s_len));
 	}
-	return (NULL);
+	return (-1);
 	
 }
 
