@@ -76,27 +76,26 @@ char	*ft_extract_line(char *save)
 
 char	*ft_read_file(int fd, char *past_buf)
 {
-	char	*next_buf;
+	char	next_buf[BUFFER_SIZE + 1]={0};
 	int		byte;
 
 	if (!past_buf)
 		past_buf = ft_calloc(1, 1);
-	next_buf = ft_calloc(BUFFER_SIZE + 1, sizeof(char));
 	byte = 1;
 	while (byte > 0)
 	{
 		byte = read(fd, next_buf, BUFFER_SIZE);
 		if (byte == -1)
 		{
-			free(next_buf);
 			return (NULL);
 		}
 		next_buf[byte] = 0;
+		if (byte == 0)
+			break ;
 		past_buf = ft_free_nxtbuf(past_buf, next_buf);
 		if (ft_strchr(next_buf, '\n'))
 			break ;
 	}
-	free(next_buf);
 	return (past_buf);
 }
 

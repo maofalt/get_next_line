@@ -17,18 +17,22 @@ char	*ft_strjoin(char const *s1, char const *s2)
 	char		*new_s;
 	size_t		i;
 	size_t		j;
+	size_t		len_s1;
+	size_t		len_s2;
 
-	new_s = malloc(sizeof(char) * (ft_strlen(s1) + ft_strlen(s2) + 1));
+	len_s1 = ft_strlen(s1);
+	len_s2 = ft_strlen(s2);
+	new_s = malloc(sizeof(char) * (len_s1 + len_s2 + 1));
 	if (!new_s || !s1 || !s2)
 		return (NULL);
 	i = 0;
-	while (i < ft_strlen(s1))
+	while (i < len_s1)
 	{
 		new_s[i] = s1[i];
 		i++;
 	}
 	j = 0;
-	while (j < ft_strlen(s2))
+	while (j < len_s2)
 	{
 		new_s[i + j] = s2[j];
 		j++;
@@ -55,19 +59,14 @@ char	*ft_strchr(const char *s, int c)
 
 	c_256 = c % 256;
 	s_cpy = (char *)s;
-	s_len = ft_strlen(s);
-	if (c_256 == '\0')
-		return (s_cpy + s_len);
-	else
+	s_len = 0;
+	while (s_cpy[s_len])
 	{
-		s_len = 0;
-		while (s_cpy[s_len])
-		{
-			if (s_cpy[s_len++] == c_256)
-				return ((char *)s_cpy + (--s_len));
-		}
-		return (NULL);
+		if (s_cpy[s_len++] == c_256)
+			return ((char *)s_cpy + (--s_len));
 	}
+	return (NULL);
+	
 }
 
 void	ft_bzero(void *s, size_t n)
