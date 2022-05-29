@@ -31,7 +31,7 @@ char	*ft_free_line(char *save, int line_len)
 		free(save);
 		return (NULL);
 	}
-	next_buffer = calloc(ft_strlen(save + line_len) + 1, sizeof(char));
+	next_buffer = ft_calloc(ft_strlen(save + line_len) + 1, sizeof(char));
 	line_len++;
 	i = 0;
 	while (save[line_len])
